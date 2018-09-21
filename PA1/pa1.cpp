@@ -97,8 +97,11 @@ void LinkedList::insert(int index, std::string value) {
 }
 
 void LinkedList::deleteLine(int index) {
+	std::cout << "Delete cmd" <<std::endl;
+	
 	if(index == 1) {
 		head = head->next;
+		return;
 	}
 	
 	Node* currentNode = head->next;
@@ -172,18 +175,57 @@ void LinkedList::search(std::string value) {
 
 int main() {
 	LinkedList* document = new LinkedList();
+	bool running = true;
 	
+	std::cout << "Welcome to the line editor! Enter one of the following commands:" << std::endl;
+	std::cout << "- insertEnd <text>" << std::endl;
+	std::cout << "- insert <line number> <text>" << std::endl;
+	std::cout << "- deleteLine <line number>" << std::endl;
+	std::cout << "- edit <line number> <text>" << std::endl;
+	std::cout << "- print" << std::endl;
+	std::cout << "- search <text>" << std::endl;
+	std::cout << "- quit" << std::endl << std::endl;
 	
-	
-	/*document->insertEnd("First statement");
-	document->insert(1, "Second statement");
-	document->insert(4, "Third statement");
-	document->insertEnd("Fourth statement");
-	document->print();
-	document->deleteLine(4);
-	document->print();
-	document->edit(2, "new");
-	document->print();
-	document->search("statement");/*
+	while(running) {
+		std::string cmd, baseCmd;
+		int firstIndex;
+		
+		std::cout << "-";
+		std::getline(std::cin, cmd);
+		firstIndex = cmd.find(" ");
+		baseCmd = cmd.substr(0, firstIndex);
+		
+		if(baseCmd == "insertEnd") {
+			std::string value = cmd.substr(firstIndex + 1);
+			document->insertEnd(value);
+		} else if(baseCmd == "insert") {
+			std::string args = cmd.substr(firstIndex + 1);
+			int secondIndex = args.find(" ");
+			std::string lineNumber = args.substr(0, secondIndex);
+			std::string value = args.substr(secondIndex + 1, args.length());
+			document->insert(std::stoi(lineNumber, NULL), value);
+		} else if(baseCmd == "deleteLine") {
+			std::string lineNumber = cmd.substr(firstIndex + 1, cmd.find(" "));
+			document->deleteLine(std::stoi(lineNumber, NULL));
+		} else if(baseCmd == "edit") {
+			std::string args = cmd.substr(firstIndex + 1);
+			int secondIndex = args.find(" ");
+			std::string lineNumber = args.substr(0, secondIndex);
+			std::string value = args.substr(secondIndex + 1);
+			document->edit(std::stoi(lineNumber, NULL), value);
+		} else if(baseCmd == "print") {
+			document->print();
+		} else if(baseCmd == "search") {
+			std::string value = cmd.substr(firstIndex + 1, cmd.find(" "));
+			document->search(value);
+		} else if(baseCmd == "quit") {
+			running = false;
+			std::cout << "See you later!" << std::endl;
+		} else {
+			std::cout << "That command doesn't exist! Try agian." << std::endl;
+		}
+		
+		std::cout << std::endl;
+	}
 };
 
