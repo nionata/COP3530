@@ -54,9 +54,6 @@ void LinkedList::insertEnd(std::string value) {
 	} else {
 		head = node;
 	}
-	
-	//delete currentNode;
-	//delete node;
 }
 
 void LinkedList::insert(int index, std::string value) {
@@ -79,7 +76,6 @@ void LinkedList::insert(int index, std::string value) {
 	
 	while(currentIndex < index) {
 		if(!currentNode) {
-			std::cout << "You tried to insert to a line out of range! Try again on a line " << currentIndex << " or less." << std::endl;
 			return;
 		}
 		
@@ -90,15 +86,9 @@ void LinkedList::insert(int index, std::string value) {
 	
 	prevNode->next = node;
 	node->next = currentNode;
-	
-	//delete prevNode;
-	//delete currentNode;
-	//delete node;
 }
 
 void LinkedList::deleteLine(int index) {
-	std::cout << "Delete cmd" <<std::endl;
-	
 	if(index == 1) {
 		head = head->next;
 		return;
@@ -110,7 +100,6 @@ void LinkedList::deleteLine(int index) {
 	
 	while(currentIndex < index) {
 		if(!currentNode->next) {
-			std::cout << "You tried to delete to a line out of range! Try again on a line " << currentIndex << " or less." << std::endl;
 			return;
 		}
 		
@@ -128,7 +117,6 @@ void LinkedList::edit(int index, std::string value) {
 	
 	while(currentIndex < index) {
 		if(!currentNode->next) {
-			std::cout << "You tried to edit a line out of range! Try again on a line " << currentIndex << " or less." << std::endl;
 			return;
 		}
 		
@@ -152,80 +140,80 @@ void LinkedList::print() {
 		currentNode = currentNode->next;
 		index++;
 	} while(currentNode != NULL);
-	
-	//delete currentNode;
 }
 
 void LinkedList::search(std::string value) {
 	Node* currentNode = head;
 	int currentIndex = 1;
+	bool found = false;
 	
 	while(currentNode) {
 		if(currentNode->data.find(value) != std::string::npos) {
 			std::cout << currentIndex << " " << currentNode->data << std::endl;
-			return;
+			found = true;
 		}
 		
 		currentNode = currentNode->next;
 		currentIndex++;
 	}
 	
-	std::cout << "Could not find the value you searched for!" << std::endl;
+	if(!found) {
+		std::cout << "not found" << std::endl;
+	}
 }
 
 int main() {
 	LinkedList* document = new LinkedList();
 	bool running = true;
 	
-	std::cout << "Welcome to the line editor! Enter one of the following commands:" << std::endl;
-	std::cout << "- insertEnd <text>" << std::endl;
-	std::cout << "- insert <line number> <text>" << std::endl;
-	std::cout << "- deleteLine <line number>" << std::endl;
-	std::cout << "- edit <line number> <text>" << std::endl;
-	std::cout << "- print" << std::endl;
-	std::cout << "- search <text>" << std::endl;
-	std::cout << "- quit" << std::endl << std::endl;
-	
 	while(running) {
 		std::string cmd, baseCmd;
 		int firstIndex;
 		
-		std::cout << "-";
 		std::getline(std::cin, cmd);
 		firstIndex = cmd.find(" ");
 		baseCmd = cmd.substr(0, firstIndex);
 		
 		if(baseCmd == "insertEnd") {
 			std::string value = cmd.substr(firstIndex + 1);
+			if(value.find("\"") != std::string::npos) {
+				value = value.substr(1, value.length() - 2);
+			}
 			document->insertEnd(value);
 		} else if(baseCmd == "insert") {
 			std::string args = cmd.substr(firstIndex + 1);
 			int secondIndex = args.find(" ");
 			std::string lineNumber = args.substr(0, secondIndex);
 			std::string value = args.substr(secondIndex + 1, args.length());
+			if(value.find("\"") != std::string::npos) {
+				value = value.substr(1, value.length() - 2);
+			}
 			document->insert(std::stoi(lineNumber, NULL), value);
-		} else if(baseCmd == "deleteLine") {
-			std::string lineNumber = cmd.substr(firstIndex + 1, cmd.find(" "));
+		} else if(baseCmd == "delete") {
+			std::string lineNumber = cmd.substr(firstIndex + 1);
 			document->deleteLine(std::stoi(lineNumber, NULL));
 		} else if(baseCmd == "edit") {
 			std::string args = cmd.substr(firstIndex + 1);
 			int secondIndex = args.find(" ");
 			std::string lineNumber = args.substr(0, secondIndex);
 			std::string value = args.substr(secondIndex + 1);
+			if(value.find("\"") != std::string::npos) {
+				value = value.substr(1, value.length() - 2);
+			}
 			document->edit(std::stoi(lineNumber, NULL), value);
 		} else if(baseCmd == "print") {
 			document->print();
 		} else if(baseCmd == "search") {
-			std::string value = cmd.substr(firstIndex + 1, cmd.find(" "));
+			std::string value = cmd.substr(firstIndex + 1);
+			if(value.find("\"") != std::string::npos) {
+				value = value.substr(1, value.length() - 2);
+			}
 			document->search(value);
 		} else if(baseCmd == "quit") {
 			running = false;
-			std::cout << "See you later!" << std::endl;
 		} else {
 			std::cout << "That command doesn't exist! Try agian." << std::endl;
 		}
-		
-		std::cout << std::endl;
 	}
 };
 
