@@ -42,14 +42,14 @@ class HashTable {
 	}
 	
 	//Hash Function 1 - Key mod table size
-	/*int hashCode(int key) {
+	int hashCode(int key) {
 		return key % tableSize;
-	}*/
+	}
 	
 	//Hash Function 2 - Mid square
-	int hashCode(int key) {
+	/*int hashCode(int key) {
 		return std::bitset<8>(std::bitset<19>(key*key).to_string().substr(5, 8)).to_ulong();
-	}
+	}*/
 	
 	double getLoadFactor() {
 		return size/tableSize;
@@ -73,10 +73,11 @@ class HashTable {
 			}
 			
 			temp->next = newValue;
+		} else {
+			table[tableIndex] = newValue;
 		}
 		
 		size++;
-		table[tableIndex] = newValue;
 	}
 	
 	void print() {
@@ -88,10 +89,14 @@ class HashTable {
 			
 			Node *temp = table[i];
 			
+			std::cout << i;
+			
 			while(temp) {
-				std::cout << i << " (" << temp->key << ", " << temp->value << ")" << std::endl;
+				std::cout << " (" << temp->key << ", " << temp->value << ")";
 				temp = temp->next;
 			}
+			
+			std::cout << std::endl;
 		}
  	}
 };
