@@ -14,10 +14,12 @@ class Node {
 	public:
 	int key;
 	int value;
+	Node *next;
 	
 	Node(int key, int value) {
 		this->key = key;
 		this->value = value;
+		this->next = NULL;
 	}
 };
 
@@ -68,19 +70,17 @@ class HashTable {
 	void put(int key, int value) {
 		Node *newValue = new Node(key, value);
 		int tableIndex = hashCode(key);
-		bool didCollide = false;
 		
-		while(table[tableIndex] != NULL && table[tableIndex]->key != key) {
-			if(!didCollide) {
-				collisions++;
-				didCollide = true;
+		if(table[tableIndex] != NULL && table[tableIndex]->key != key) {
+			collisions++;
+			
+			Node *temp = table[tableIndex];
+			
+			while(temp->next) {
+				temp = temp->next;
 			}
 			
-			tableIndex++;
-			
-			if(tableIndex == tableSize) {
-				tableIndex = 0;
-			}
+			temp->next = newValue;
 		}
 		
 		size++;
@@ -94,7 +94,12 @@ class HashTable {
 				continue;
 			}
 			
-			std::cout << i << " (" << table[i]->key << ", " << table[i]->value << ")" << std::endl;
+			Node *temp = table[i];
+			
+			while(temp) {
+				std::cout << i << " (" << temp->key << ", " << temp->value << ")" << std::endl;
+				temp = temp->next;
+			}
 		}
  	}
 };
