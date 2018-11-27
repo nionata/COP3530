@@ -100,6 +100,8 @@ void testTable(int size) {
 		table->put(randKey, 1);
 		std::cout << table->collisions << ", " << table->getLoadFactor() << std::endl;
 	}
+	
+	table->print();
 }
 
 int main() {
